@@ -53,10 +53,8 @@ public class PixPayloadGenerator {
                 additionalDataFieldTemplate;
 
         String payloadToCalculateCRC = payloadWithoutCRC + "6304";
-
         String crc = calculateCRC(payloadToCalculateCRC);
-
-        return payloadWithoutCRC + crc;
+        return payloadWithoutCRC + "6304" + crc;
     }
 
 
@@ -81,6 +79,7 @@ public class PixPayloadGenerator {
                 crc &= 0xFFFF;
             }
         }
-        return String.format("6304%04X", crc);
+        return String.format("%04X", crc);
     }
 }
+

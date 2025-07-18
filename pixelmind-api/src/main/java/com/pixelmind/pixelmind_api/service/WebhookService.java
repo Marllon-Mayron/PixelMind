@@ -1,39 +1,35 @@
 package com.pixelmind.pixelmind_api.service;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
 public class WebhookService {
 
-    private final RestTemplate restTemplate;
-    private final InterAuthService authService;
+    private final MercadoPagoService mercadoPagoClient;
 
-    public WebhookService(InterAuthService authService) {
-        this.authService = authService;
-        this.restTemplate = new RestTemplate();
+    public WebhookService(MercadoPagoService mercadoPagoClient) {
+        this.mercadoPagoClient = mercadoPagoClient;
     }
 
-    public void registerWebhook(String webhookUrl) {
-        String accessToken = authService.getAccessToken();
+    public void processWebhook(Map<String, Object> payload) {
+        System.out.println("Recebeu webhook: " + payload);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(accessToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        String type = (String) payload.get("type");
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("url", webhookUrl);
-        body.put("events", List.of("PAYMENT_RECEIVED", "PIX_RECEIVED"));
+        if ("payment".equals(type)) {
+            Map<String, Object> data = (Map<String, Object>) payload.get("data");
+            Long paymentId = Long.valueOf(data.get("id").toString());
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        restTemplate.put("https://api.bancointer.com.br/webhook/v1/config", request);
+            Map<String, Object> paymentDetails = mercadoPagoClient.getPaymentDetails(paymentId);
+            String status = (String) paymentDetails.get("status");
+
+            System.out.println("Pagamento ID " + paymentId + " com status: " + status);
+
+            // Aqui você pode usar o ID do pedido (talvez esteja em "external_reference")
+            // e atualizar o banco de dados, por exemplo:
+            // if (status.equals("approved")) { ... atualizar pedido como pago ... }
+        }
     }
 }
-

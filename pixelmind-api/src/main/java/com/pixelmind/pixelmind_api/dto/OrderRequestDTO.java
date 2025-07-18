@@ -10,4 +10,5 @@ public class OrderRequestDTO {
     private Long nftItemId;
     private BigDecimal amount;
     private String transactionId;
+    private String email;
 }

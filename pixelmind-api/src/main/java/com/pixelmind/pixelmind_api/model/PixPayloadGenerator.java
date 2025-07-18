@@ -22,8 +22,7 @@ public class PixPayloadGenerator {
         String guiField = guiTag + String.format("%02d", guiValue.length()) + guiValue;
 
         String pixKeyTag = "01";
-        String pixKeyValue = key;
-        String pixKeyField = pixKeyTag + String.format("%02d", pixKeyValue.length()) + pixKeyValue;
+        String pixKeyField = pixKeyTag + String.format("%02d", key.length()) + key;
 
         String merchantAccountInfo = guiField + pixKeyField;
         String merchantAccountInfoTemplate = "26" + String.format("%02d", merchantAccountInfo.length()) + merchantAccountInfo;
@@ -40,8 +39,7 @@ public class PixPayloadGenerator {
         String countryCode = "5802BR";
         String merchantNameField = "59" + String.format("%02d", merchantName.length()) + merchantName;
         String merchantCityField = "60" + String.format("%02d", merchantCity.length()) + merchantCity;
-        String additionalDataFieldTemplate = "62" + String.format("%02d", txid.length() + 4) + "05" + "01" + txid;
-
+        String additionalDataFieldTemplate = "62" +  String.format("%02d", txid.length() + 4) +   "05" + String.format("%02d", txid.length()) +  txid;
         String payloadWithoutCRC = payloadFormatIndicator +
                 merchantAccountInfoTemplate +
                 merchantCategoryCode +

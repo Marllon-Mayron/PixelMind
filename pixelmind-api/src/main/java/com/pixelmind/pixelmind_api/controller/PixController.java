@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/pix")
 public class PixController {
 
-    private static final String PIX_KEY = "marllonmayronferreiradasilva@gmail.com";
+    private static final String PIX_KEY = "11931328439";
     private static final String PIX_NAME = "Marllon Silva";
     private static final String CITY = "Recife";
 
@@ -54,7 +54,7 @@ public class PixController {
         response.put("transactionId", transactionId);
         response.put("pixPayload", pixPayload);
         response.put("qrCodeBase64", "data:image/png;base64," + qrCodeBase64);
-
+        System.out.println("Payload: " + pixPayload);
         return ResponseEntity.ok(response);
     }
 

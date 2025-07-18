@@ -42,17 +42,37 @@ public class MercadoPagoController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/webhook")
-    public ResponseEntity<Void> handleWebhook(@RequestBody Map<String, Object> body) {
-        // Tratar a notificação do Mercado Pago
-        System.out.println("Webhook recebido: " + body);
+    @PostMapping(value = "/webhook", consumes = {"application/json", "application/x-www-form-urlencoded"})
+    public ResponseEntity<Void> handleWebhook(@RequestBody(required = false) Map<String, Object> body,
+                                              @RequestParam(required = false) Map<String, String> formParams) {
+        // Para debug
+        System.out.println("Webhook recebido:");
+        if (body != null) {
+            System.out.println("JSON: " + body);
+        }
+        if (formParams != null) {
+            System.out.println("FORM: " + formParams);
+        }
 
-        // Aqui você pega o ID da transação e atualiza no banco
-        // Exemplo (precisa adaptar para o formato do Mercado Pago)
-        // String paymentId = (String) body.get("id");
-        // purchaseOrderService.updateStatusPorPagamentoId(paymentId, "PAID");
+        // Acessar ID da transação
+        String paymentId = null;
+
+        if (body != null && body.containsKey("data")) {
+            Map<String, Object> data = (Map<String, Object>) body.get("data");
+            paymentId = String.valueOf(data.get("id"));
+        } else if (formParams != null && formParams.containsKey("data.id")) {
+            paymentId = formParams.get("data.id");
+        }
+
+        if (paymentId != null) {
+            System.out.println("Pagamento ID recebido no webhook: " + paymentId);
+
+            // Atualiza status no banco com base no ID
+
+        }
 
         return ResponseEntity.ok().build();
     }
+
 }
 

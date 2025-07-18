@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class MercadoPagoService {
@@ -24,8 +25,11 @@ public class MercadoPagoService {
     public Map<String, Object> criarPagamento(Map<String, Object> payload) {
         String url = "https://api.mercadopago.com/v1/payments";
         HttpHeaders headers = new HttpHeaders();
+        String externalReference = (String) payload.get("external_reference");
+        headers.set("X-Idempotency-Key", externalReference);
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(accessToken);
+
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
 

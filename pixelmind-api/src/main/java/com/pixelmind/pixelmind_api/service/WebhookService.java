@@ -27,9 +27,6 @@ public class WebhookService {
 
             System.out.println("Pagamento ID " + paymentId + " com status: " + status);
 
-            // Aqui você pode usar o ID do pedido (talvez esteja em "external_reference")
-            // e atualizar o banco de dados, por exemplo:
-            // if (status.equals("approved")) { ... atualizar pedido como pago ... }
         }
     }
 }

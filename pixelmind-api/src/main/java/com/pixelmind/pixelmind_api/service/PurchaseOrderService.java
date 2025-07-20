@@ -1,7 +1,13 @@
 package com.pixelmind.pixelmind_api.service;
 
+import com.pixelmind.pixelmind_api.model.User;
+import com.pixelmind.pixelmind_api.model.store.NftItem;
 import com.pixelmind.pixelmind_api.model.store.PurchaseOrder;
+import com.pixelmind.pixelmind_api.model.store.UserNft;
+import com.pixelmind.pixelmind_api.repository.NftItemRepository;
 import com.pixelmind.pixelmind_api.repository.PurchaseOrderRepository;
+import com.pixelmind.pixelmind_api.repository.UserNftRepository;
+import com.pixelmind.pixelmind_api.repository.UserRepository;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +21,9 @@ import java.util.Optional;
 public class PurchaseOrderService {
 
     private final PurchaseOrderRepository repository;
+    private final UserRepository userRepository;
+    private final NftItemRepository nftItemRepository;
+    private final UserNftRepository userNftRepository;
     private final RestTemplate restTemplate;
 
     // 🔐 Substitua com a URL oficial e suas credenciais reais
@@ -24,8 +33,11 @@ public class PurchaseOrderService {
     // ⚠️ Token de acesso OAuth (deve ser obtido via client_credentials)
     private String accessToken = "TOKEN_DE_ACESSO_OAUTH";
 
-    public PurchaseOrderService(PurchaseOrderRepository repository) {
+    public PurchaseOrderService(PurchaseOrderRepository repository,  UserNftRepository userNftRepository,UserRepository userRepository, NftItemRepository nftItemRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
+        this.nftItemRepository = nftItemRepository;
+        this.userNftRepository = userNftRepository;
         this.restTemplate = new RestTemplate();
     }
 
@@ -142,4 +154,38 @@ public class PurchaseOrderService {
 
         return "PAID".equalsIgnoreCase(order.getStatus());
     }
+
+    public PurchaseOrder updateStatusByTransactionId(String txid, String newStatus) {
+        PurchaseOrder order = repository.findByTransactionId(txid)
+                .orElseThrow(() -> new RuntimeException("Pedido com txid não encontrado: " + txid));
+
+        order.setStatus(newStatus);
+
+        if ("PAID".equalsIgnoreCase(newStatus)) {
+            order.setPaidAt(LocalDateTime.now());
+
+            // Associa NFT ao usuário (se ainda não tiver)
+            Optional<User> userOptional = userRepository.findById(order.getUserId());
+            Optional<NftItem> nftOptional = nftItemRepository.findById(order.getNftItemId());
+
+            if (userOptional.isPresent() && nftOptional.isPresent()) {
+                User user = userOptional.get();
+                NftItem nft = nftOptional.get();
+
+                boolean alreadyHas = userNftRepository.existsByUserAndNftItem(user, nft);
+                if (!alreadyHas) {
+                    UserNft userNft = new UserNft();
+                    userNft.setUser(user);
+                    userNft.setNftItem(nft);
+                    userNftRepository.save(userNft);
+                }
+            } else {
+                throw new RuntimeException("Usuário ou NFT não encontrado para associar ao pedido");
+            }
+        }
+
+        return repository.save(order);
+    }
+
+
 }

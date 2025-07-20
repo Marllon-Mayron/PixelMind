@@ -2,6 +2,7 @@ package com.pixelmind.pixelmind_api.service;
 
 import com.pixelmind.pixelmind_api.dto.NftItemDTO;
 import com.pixelmind.pixelmind_api.dto.NftItemWithDateDTO;
+import com.pixelmind.pixelmind_api.dto.UserNftDTO;
 import com.pixelmind.pixelmind_api.enums.NftTier;
 import com.pixelmind.pixelmind_api.model.store.NftItem;
 import com.pixelmind.pixelmind_api.model.User;
@@ -155,16 +156,28 @@ public class NftItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<NftItemWithDateDTO> findNftsByUserEmail(String email) {
+    public List<UserNftDTO> findNftsByUserEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         List<UserNft> userNfts = userNftRepository.findAllByUserIdWithNft(user.getId());
 
-        return userNfts.stream()
-                .map(u -> new NftItemWithDateDTO(u.getNftItem(), u.getEarnedAt()))
-                .toList();
+        return userNfts.stream().map(u -> {
+            NftItem nft = u.getNftItem();
+            return new UserNftDTO(
+                    nft.getId(),
+                    nft.getTitle(),
+                    nft.getImageUrl(),
+                    nft.getPrice(),
+                    nft.isForSale(),
+                    nft.getCollectionId(),
+                    nft.getTier().name(),
+                    nft.getOwner() != null ? nft.getOwner().getId() : null,
+                    u.getEarnedAt()
+            );
+        }).toList();
     }
+
 
 
 }

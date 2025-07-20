@@ -2,6 +2,7 @@ package com.pixelmind.pixelmind_api.controller;
 
 import com.pixelmind.pixelmind_api.dto.NftItemDTO;
 import com.pixelmind.pixelmind_api.dto.NftItemWithDateDTO;
+import com.pixelmind.pixelmind_api.dto.UserNftDTO;
 import com.pixelmind.pixelmind_api.model.User;
 import com.pixelmind.pixelmind_api.model.store.NftItem;
 import com.pixelmind.pixelmind_api.model.store.UserNft;
@@ -82,9 +83,9 @@ public class NftItemController {
     }
 
     @GetMapping("/user/nfts")
-    public ResponseEntity<List<NftItemWithDateDTO>> getUserNfts(Principal principal) {
+    public ResponseEntity<List<UserNftDTO>> getUserNfts(Principal principal) {
         String email = principal.getName();
-        List<NftItemWithDateDTO> nfts = nftItemService.findNftsByUserEmail(email);
+        List<UserNftDTO> nfts = nftItemService.findNftsByUserEmail(email);
         return ResponseEntity.ok(nfts);
     }
 

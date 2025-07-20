@@ -1,6 +1,7 @@
 package com.pixelmind.pixelmind_api.controller;
 
 import com.pixelmind.pixelmind_api.dto.OrderRequestDTO;
+import com.pixelmind.pixelmind_api.dto.payment.CreatePixPaymentRequestDTO;
 import com.pixelmind.pixelmind_api.service.MercadoPagoService;
 import com.pixelmind.pixelmind_api.service.PurchaseOrderService;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,14 @@ public class PixController {
             BigDecimal valor = request.getAmount();
             String email = principal.getName();
 
-            Map<String, Object> pagamento = mercadoPagoService.criarPagamentoPix(valor, txid, email);
+            CreatePixPaymentRequestDTO dto = new CreatePixPaymentRequestDTO();
+            dto.setTransaction_amount(valor.doubleValue());
+            dto.setPayment_method_id("pix");
+            dto.setEmail(email);
+            dto.setDescription("Compra PixelMind NFT");
+            dto.setExternal_reference(txid);
+
+            Map<String, Object> pagamento = mercadoPagoService.criarPagamentoPix(dto);
 
             Map<String, Object> pointOfInteraction = (Map<String, Object>) pagamento.get("point_of_interaction");
             Map<String, Object> transactionData = (Map<String, Object>) pointOfInteraction.get("transaction_data");
@@ -48,4 +56,5 @@ public class PixController {
             return ResponseEntity.status(500).body(Map.of("error", "Erro ao criar pagamento PIX: " + e.getMessage()));
         }
     }
+
 }

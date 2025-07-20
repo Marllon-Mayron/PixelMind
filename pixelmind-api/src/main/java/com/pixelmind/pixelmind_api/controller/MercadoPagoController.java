@@ -1,7 +1,9 @@
 package com.pixelmind.pixelmind_api.controller;
 
 import com.pixelmind.pixelmind_api.dto.OrderRequestDTO;
+import com.pixelmind.pixelmind_api.dto.payment.WebhookPayloadDTO;
 import com.pixelmind.pixelmind_api.integration.MercadoPagoIntegration;
+import com.pixelmind.pixelmind_api.service.MercadoPagoService;
 import com.pixelmind.pixelmind_api.service.PurchaseOrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +18,12 @@ public class MercadoPagoController {
 
     private final MercadoPagoIntegration mercadoPagoClient;
     private final PurchaseOrderService purchaseOrderService;
+    private final MercadoPagoService mercadoPagoService;
 
-    public MercadoPagoController(MercadoPagoIntegration mercadoPagoClient, PurchaseOrderService purchaseOrderService) {
+    public MercadoPagoController(MercadoPagoIntegration mercadoPagoClient, PurchaseOrderService purchaseOrderService, MercadoPagoService mercadoPagoService) {
         this.mercadoPagoClient = mercadoPagoClient;
         this.purchaseOrderService = purchaseOrderService;
+        this.mercadoPagoService = mercadoPagoService;
     }
 
     @PostMapping("/createPayment")
@@ -43,32 +47,22 @@ public class MercadoPagoController {
     }
 
     @PostMapping(value = "/webhook", consumes = {"application/json", "application/x-www-form-urlencoded"})
-    public ResponseEntity<Void> handleWebhook(@RequestBody(required = false) Map<String, Object> body,
+    public ResponseEntity<Void> handleWebhook(@RequestBody(required = false) WebhookPayloadDTO payload,
                                               @RequestParam(required = false) Map<String, String> formParams) {
-        // Para debug
-        System.out.println("Webhook recebido:");
-        if (body != null) {
-            System.out.println("JSON: " + body);
-        }
-        if (formParams != null) {
-            System.out.println("FORM: " + formParams);
-        }
 
-        // Acessar ID da transação
-        String paymentId = null;
+        System.out.println("🔔 Webhook recebido:");
 
-        if (body != null && body.containsKey("data")) {
-            Map<String, Object> data = (Map<String, Object>) body.get("data");
-            paymentId = String.valueOf(data.get("id"));
+        if (payload != null) {
+            System.out.println("✅ JSON Payload: " + payload);
+            if (payload.getData() != null && payload.getData().getId() != null) {
+                Long paymentId = payload.getData().getId();
+                System.out.println("💰 Pagamento ID: " + paymentId);
+                mercadoPagoService.getPaymentDetails(paymentId);
+            }
         } else if (formParams != null && formParams.containsKey("data.id")) {
-            paymentId = formParams.get("data.id");
-        }
-
-        if (paymentId != null) {
-            System.out.println("Pagamento ID recebido no webhook: " + paymentId);
-
-            // Atualiza status no banco com base no ID
-
+            Long paymentId = Long.valueOf(formParams.get("data.id"));
+            System.out.println("💰 Pagamento ID via FORM: " + paymentId);
+            mercadoPagoService.getPaymentDetails(paymentId);
         }
 
         return ResponseEntity.ok().build();

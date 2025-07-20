@@ -1,5 +1,6 @@
 package com.pixelmind.pixelmind_api.service;
 
+import com.pixelmind.pixelmind_api.dto.payment.CreatePixPaymentRequestDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,11 @@ public class MercadoPagoService {
     private String accessToken;
 
     private final RestTemplate restTemplate;
+    private final PurchaseOrderService purchaseOrderService;
 
-    public MercadoPagoService(RestTemplate restTemplate) {
+    public MercadoPagoService(RestTemplate restTemplate, PurchaseOrderService purchaseOrderService) {
         this.restTemplate = restTemplate;
+        this.purchaseOrderService = purchaseOrderService;
     }
 
     // Método genérico para criar pagamento
@@ -54,14 +57,13 @@ public class MercadoPagoService {
     }
 
 
-    // Método específico para pagamento PIX
-    public Map<String, Object> criarPagamentoPix(BigDecimal amount, String txid, String email) {
+    public Map<String, Object> criarPagamentoPix(CreatePixPaymentRequestDTO dto) {
         Map<String, Object> payload = Map.of(
-                "transaction_amount", amount,
-                "payment_method_id", "pix",
-                "payer", Map.of("email", email),
-                "description", "Compra PixelMind NFT",
-                "external_reference", txid
+                "transaction_amount", dto.getTransaction_amount(),
+                "payment_method_id", dto.getPayment_method_id(),
+                "payer", Map.of("email", dto.getEmail()),
+                "description", dto.getDescription(),
+                "external_reference", dto.getExternal_reference()
         );
         return criarPagamento(payload);
     }
@@ -78,6 +80,23 @@ public class MercadoPagoService {
 
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
 
-        return response.getBody();
+        Map<String, Object> responseBody = response.getBody();
+
+        if (responseBody != null && responseBody.containsKey("external_reference") && responseBody.containsKey("status")) {
+            String externalReference = responseBody.get("external_reference").toString();
+            String status = responseBody.get("status").toString();
+
+            System.out.println("🟢 external_reference (txid): " + externalReference);
+            System.out.println("📦 Status do pagamento: " + status);
+
+            if ("approved".equalsIgnoreCase(status)) {
+                purchaseOrderService.updateStatusByTransactionId(externalReference, "PAID");
+            } else {
+                System.out.println("⛔ Pagamento ainda não aprovado. Nenhuma ação tomada.");
+            }
+        }
+
+        return responseBody;
     }
+
 }

@@ -1,12 +1,11 @@
 package com.pixelmind.pixelmind_api.controller;
 
-import com.pixelmind.pixelmind_api.dto.OrderRequestDTO;
+import com.pixelmind.pixelmind_api.dto.store.OrderRequestDTO;
 import com.pixelmind.pixelmind_api.model.store.PurchaseOrder;
 import com.pixelmind.pixelmind_api.service.PurchaseOrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController

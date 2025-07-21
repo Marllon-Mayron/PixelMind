@@ -1,13 +1,12 @@
 package com.pixelmind.pixelmind_api.service;
 
-import com.pixelmind.pixelmind_api.dto.NftCollectionDTO;
+import com.pixelmind.pixelmind_api.dto.store.NftCollectionDTO;
 import com.pixelmind.pixelmind_api.model.store.NftCollection;
 import com.pixelmind.pixelmind_api.repository.NftCollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class NftCollectionService {

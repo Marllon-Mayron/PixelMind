@@ -1,6 +1,6 @@
 package com.pixelmind.pixelmind_api.controller;
 
-import com.pixelmind.pixelmind_api.dto.OrderRequestDTO;
+import com.pixelmind.pixelmind_api.dto.store.OrderRequestDTO;
 import com.pixelmind.pixelmind_api.dto.payment.WebhookPayloadDTO;
 import com.pixelmind.pixelmind_api.integration.MercadoPagoIntegration;
 import com.pixelmind.pixelmind_api.service.MercadoPagoService;

@@ -1,7 +1,7 @@
 package com.pixelmind.pixelmind_api.service;
 
-import com.pixelmind.pixelmind_api.dto.StoreItemDTO;
-import com.pixelmind.pixelmind_api.dto.StorePromotionDTO;
+import com.pixelmind.pixelmind_api.dto.store.StoreItemDTO;
+import com.pixelmind.pixelmind_api.dto.store.StorePromotionDTO;
 import com.pixelmind.pixelmind_api.model.store.NftItem;
 import com.pixelmind.pixelmind_api.model.store.StoreItem;
 import com.pixelmind.pixelmind_api.model.store.StorePromotion;

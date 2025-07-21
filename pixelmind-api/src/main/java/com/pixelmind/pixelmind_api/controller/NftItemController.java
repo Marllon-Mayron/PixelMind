@@ -1,16 +1,11 @@
 package com.pixelmind.pixelmind_api.controller;
 
-import com.pixelmind.pixelmind_api.dto.NftItemDTO;
-import com.pixelmind.pixelmind_api.dto.NftItemWithDateDTO;
+import com.pixelmind.pixelmind_api.dto.store.NftItemDTO;
 import com.pixelmind.pixelmind_api.dto.UserNftDTO;
-import com.pixelmind.pixelmind_api.model.User;
-import com.pixelmind.pixelmind_api.model.store.NftItem;
-import com.pixelmind.pixelmind_api.model.store.UserNft;
 import com.pixelmind.pixelmind_api.repository.UserRepository;
 import com.pixelmind.pixelmind_api.service.NftItemService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

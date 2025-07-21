@@ -1,6 +1,6 @@
 package com.pixelmind.pixelmind_api.controller;
 
-import com.pixelmind.pixelmind_api.dto.NftCollectionDTO;
+import com.pixelmind.pixelmind_api.dto.store.NftCollectionDTO;
 import com.pixelmind.pixelmind_api.model.store.NftCollection;
 import com.pixelmind.pixelmind_api.service.NftCollectionService;
 import org.springframework.beans.factory.annotation.Autowired;

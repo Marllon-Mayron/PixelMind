@@ -1,9 +1,10 @@
 package com.pixelmind.pixelmind_api.controller;
 
-import com.pixelmind.pixelmind_api.dto.OrderRequestDTO;
+import com.pixelmind.pixelmind_api.dto.store.OrderRequestDTO;
 import com.pixelmind.pixelmind_api.dto.payment.CreatePixPaymentRequestDTO;
 import com.pixelmind.pixelmind_api.service.MercadoPagoService;
 import com.pixelmind.pixelmind_api.service.PurchaseOrderService;
+import com.pixelmind.pixelmind_api.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
@@ -18,15 +19,18 @@ public class PixController {
 
     private final MercadoPagoService mercadoPagoService;
     private final PurchaseOrderService purchaseOrderService;
+    private final UserService userService;
 
-    public PixController(MercadoPagoService mercadoPagoService, PurchaseOrderService purchaseOrderService) {
+    public PixController(MercadoPagoService mercadoPagoService, PurchaseOrderService purchaseOrderService, UserService userService) {
         this.mercadoPagoService = mercadoPagoService;
         this.purchaseOrderService = purchaseOrderService;
+        this.userService =  userService;
     }
 
     @PostMapping("/createOrder")
     public ResponseEntity<Map<String, Object>> createOrder(@RequestBody OrderRequestDTO request, Principal principal) {
         try {
+            request.setUserId(userService.getUserByPrincipal(principal).getId());
             String txid = UUID.randomUUID().toString().replace("-", "");
             BigDecimal valor = request.getAmount();
             String email = principal.getName();

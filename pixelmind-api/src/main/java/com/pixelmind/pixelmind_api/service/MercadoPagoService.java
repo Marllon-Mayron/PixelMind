@@ -91,6 +91,7 @@ public class MercadoPagoService {
 
             if ("approved".equalsIgnoreCase(status)) {
                 purchaseOrderService.updateStatusByTransactionId(externalReference, "PAID");
+
             } else {
                 System.out.println("⛔ Pagamento ainda não aprovado. Nenhuma ação tomada.");
             }

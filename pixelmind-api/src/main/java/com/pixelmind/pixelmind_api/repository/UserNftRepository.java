@@ -1,6 +1,5 @@
 package com.pixelmind.pixelmind_api.repository;
 
-import com.pixelmind.pixelmind_api.dto.NftItemWithDateDTO;
 import com.pixelmind.pixelmind_api.model.User;
 import com.pixelmind.pixelmind_api.model.store.NftItem;
 import com.pixelmind.pixelmind_api.model.store.UserNft;

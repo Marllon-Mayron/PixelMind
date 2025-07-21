@@ -1,4 +1,4 @@
-package com.pixelmind.pixelmind_api.dto;
+package com.pixelmind.pixelmind_api.dto.store;
 
 import lombok.Data;
 

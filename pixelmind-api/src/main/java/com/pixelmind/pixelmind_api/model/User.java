@@ -41,6 +41,9 @@ public class User {
     @Min(0)
     private Integer age;
 
+    @Column(name = "ticket")
+    private Integer ticket = 0;
+
     @Column(nullable = false)
     private String privileges = "user";
 

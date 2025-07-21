@@ -1,9 +1,8 @@
-package com.pixelmind.pixelmind_api.dto;
+package com.pixelmind.pixelmind_api.dto.store;
 
 import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 public class StoreItemDTO {

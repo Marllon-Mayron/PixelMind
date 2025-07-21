@@ -1,7 +1,7 @@
 package com.pixelmind.pixelmind_api.controller;
 
-import com.pixelmind.pixelmind_api.dto.StoreItemDTO;
-import com.pixelmind.pixelmind_api.dto.StorePromotionDTO;
+import com.pixelmind.pixelmind_api.dto.store.StoreItemDTO;
+import com.pixelmind.pixelmind_api.dto.store.StorePromotionDTO;
 import com.pixelmind.pixelmind_api.service.StoreService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

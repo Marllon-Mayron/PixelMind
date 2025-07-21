@@ -1,7 +1,6 @@
 package com.pixelmind.pixelmind_api.service;
 
-import com.pixelmind.pixelmind_api.dto.NftItemDTO;
-import com.pixelmind.pixelmind_api.dto.NftItemWithDateDTO;
+import com.pixelmind.pixelmind_api.dto.store.NftItemDTO;
 import com.pixelmind.pixelmind_api.dto.UserNftDTO;
 import com.pixelmind.pixelmind_api.enums.NftTier;
 import com.pixelmind.pixelmind_api.model.store.NftItem;

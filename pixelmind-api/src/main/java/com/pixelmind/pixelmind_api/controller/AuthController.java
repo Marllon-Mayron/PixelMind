@@ -3,7 +3,9 @@ package com.pixelmind.pixelmind_api.controller;
 import com.pixelmind.pixelmind_api.config.JwtUtil;
 import com.pixelmind.pixelmind_api.dto.UserCreateDTO;
 import com.pixelmind.pixelmind_api.model.User;
+import com.pixelmind.pixelmind_api.model.UserStats;
 import com.pixelmind.pixelmind_api.repository.UserRepository;
+import com.pixelmind.pixelmind_api.repository.UserStatsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserStatsRepository userStatsRepository;
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired
@@ -44,6 +48,11 @@ public class AuthController {
         user.setPrivileges("user");
 
         userRepository.save(user);
+
+        UserStats stats = new UserStats();
+        stats.setUser(user); // associa o user
+        userStatsRepository.save(stats);
+
         String token = jwtUtil.generateToken(user.getEmail(), user.getPrivileges());
 
         return ResponseEntity.ok(Map.of(
@@ -51,6 +60,7 @@ public class AuthController {
                 "token", token
         ));
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User login) {

@@ -178,6 +178,10 @@ public class PurchaseOrderService {
                     userNft.setUser(user);
                     userNft.setNftItem(nft);
                     userNftRepository.save(userNft);
+
+                    user.setAge(99);
+                    userRepository.save(user);
+
                 }
             } else {
                 throw new RuntimeException("Usuário ou NFT não encontrado para associar ao pedido");
